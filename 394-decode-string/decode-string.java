@@ -1,45 +1,56 @@
 class Solution {
     public String decodeString(String s) {
-        int n = s.length();
-        StringBuilder res = new StringBuilder();
+        
         Stack<Character> stack = new Stack<>();
-
-        for (int i = 0; i < n; i++) {
-            char currentChar = s.charAt(i);
-
-            if (currentChar == ']') {
-                StringBuilder temp = new StringBuilder();
-                // Pop characters until '[' is encountered
-                while (!stack.isEmpty() && stack.peek() != '[') {
-                    temp.insert(0, stack.pop());
-                }
-                // Remove the '[' from the stack
-                stack.pop();
-
-                // Extract and parse the repeat count
-                StringBuilder countStr = new StringBuilder();
-                while (!stack.isEmpty() && Character.isDigit(stack.peek())) {
-                    countStr.insert(0, stack.pop());
-                }
-                int repeatCount = Integer.parseInt(countStr.toString());
-
-                // Repeat the decoded string and push it back onto the stack
-                String decodedStr = temp.toString();
-                for (int j = 0; j < repeatCount; j++) {
-                    for (char ch : decodedStr.toCharArray()) {
+        
+        for(char c : s.toCharArray())
+        {
+            if(c != ']') 
+                stack.push(c); //push everything but ]
+            
+            else 
+            {
+                //step 1: 
+                    //if you find a closing ] then 
+                   //retrieve the string it encapsulates
+                
+                StringBuilder sb = new StringBuilder();
+                while(!stack.isEmpty() && Character.isLetter(stack.peek()))
+                    sb.insert(0, stack.pop());
+                
+                String sub = sb.toString(); //this is the string contained in [ ]
+                stack.pop(); //Discard the '[';
+                
+                
+                //step 2: 
+                    //after that get the number of
+                  // times it should repeat from stack
+                    
+                sb = new StringBuilder();
+                while(!stack.isEmpty() && Character.isDigit(stack.peek()))
+                    sb.insert(0, stack.pop());
+                    
+                int count = Integer.valueOf(sb.toString()); //this is the number
+                
+                
+                //step 3: 
+                    //repeat the string within the [ ] count 
+                  //number of times and push it back into stack
+                
+                while(count > 0)
+                {
+                    for(char ch : sub.toCharArray())  
                         stack.push(ch);
-                    }
+                    count--;
                 }
-            } else {
-                stack.push(currentChar);
             }
         }
+        
+      //final fetching and returning the value in stack 
+        StringBuilder retv = new StringBuilder();
+        while(!stack.isEmpty())
+            retv.insert(0, stack.pop());
 
-        // Build the result from the stack
-        while (!stack.isEmpty()) {
-            res.insert(0, stack.pop());
-        }
-
-        return res.toString();
+        return retv.toString();
     }
 }
