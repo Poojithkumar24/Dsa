@@ -8,6 +8,14 @@ class Solution {
         }
 
         if(empty==0) return 0;
+        return f(grid,empty);
+
+        
+    }
+
+    int f(int[][] grid,int empty){
+
+        if(empty==0) return 0;
 
         int moves=Integer.MAX_VALUE;
         for(int i=0;i<3;i++){
@@ -20,7 +28,7 @@ class Solution {
                                 int dis=Math.abs(x-i)+Math.abs(y-j);
                                 grid[x][y]--;
                                 grid[i][j]++;
-                                moves=Math.min(moves,dis+minimumMoves(grid));
+                                moves=Math.min(moves,dis+f(grid,empty-1));
                                 grid[x][y]++;
                                 grid[i][j]--;
                             }
